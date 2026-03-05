@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maquette — Global Electro Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #2ea8e0;
+    --accent2: #3ecf8e;
+    --accent3: #f0a030;
+    --accent4: #e05252;
+    --text: #e6edf3;
+    --text-muted: #7d8590;
+    --text-dim: #484f58;
+    --wire: #2d3748;
+    --wire-bright: #4a5568;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* TABS NAV */
+  .tabs-nav {
+    display: flex;
+    gap: 2px;
+    padding: 8px 24px 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-right: 6px;
+  }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 24px; animation: fadeIn 0.2s ease; }
+  .tab-content.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* WIREFRAME ELEMENTS */
+  .wire-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .wire-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .wire-label span {
+    color: var(--accent);
+  }
+
+  /* KPI CARDS */
+  .kpi-row {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .kpi-row-4 { grid-template-columns: repeat(4, 1fr); }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+
+  .kpi-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .kpi-card.blue::before { background: var(--accent); }
+  .kpi-card.green::before { background: var(--accent2); }
+  .kpi-card.orange::before { background: var(--accent3); }
+  .kpi-card.red::before { background: var(--accent4); }
+
+  .kpi-name {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .kpi-value.home { font-size: 28px; }
+
+  .kpi-delta {
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .kpi-delta.up { color: var(--accent2); }
+  .kpi-delta.down { color: var(--accent4); }
+
+  /* CHARTS */
+  .chart-row {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .chart-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .chart-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .chart-row-6040 { grid-template-columns: 6fr 4fr; }
+  .chart-row-4060 { grid-template-columns: 4fr 6fr; }
+
+  .chart-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    min-height: 180px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .chart-sub {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Fake bar chart */
+  .fake-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 90px;
+    padding-top: 10px;
+  }
+
+  .fake-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    opacity: 0.7;
+    position: relative;
+  }
+
+  .fake-bar.blue { background: var(--accent); }
+  .fake-bar.green { background: var(--accent2); }
+  .fake-bar.orange { background: var(--accent3); }
+  .fake-bar.mixed { background: linear-gradient(to top, var(--accent), var(--accent2)); }
+
+  /* Fake line chart */
+  .fake-line { width: 100%; height: 80px; position: relative; }
+
+  .fake-line svg { width: 100%; height: 100%; }
+
+  /* Fake horizontal bars */
+  .fake-hbars { display: flex; flex-direction: column; gap: 6px; }
+
+  .fake-hbar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 9px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .fake-hbar-label { width: 80px; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .fake-hbar-track { flex: 1; height: 12px; background: var(--wire); border-radius: 2px; overflow: hidden; }
+
+  .fake-hbar-fill { height: 100%; border-radius: 2px; }
+
+  .blue-fill { background: var(--accent); }
+  .green-fill { background: var(--accent2); }
+  .orange-fill { background: var(--accent3); }
+
+  /* Fake donut */
+  .fake-donut { display: flex; justify-content: center; align-items: center; padding: 10px; }
+
+  /* Fake table */
+  .fake-table { width: 100%; border-collapse: collapse; }
+
+  .fake-table th {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .fake-table td {
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--wire);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .fake-table td.highlight { color: var(--text); }
+
+  /* HOME special */
+  .home-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #0d2137 0%, #0d1117 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-hero::after {
+    content: 'GLOBAL ELECTRO';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-size: 80px;
+    font-weight: 700;
+    color: rgba(46, 168, 224, 0.04);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .home-title { font-size: 28px; font-weight: 700; color: var(--text); }
+  .home-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .home-year-filter {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .year-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .year-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* NAV CARDS HOME */
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .nav-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .nav-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .nav-icon { font-size: 24px; margin-bottom: 8px; }
+  .nav-name { font-size: 11px; font-weight: 600; color: var(--text); }
+  .nav-desc { font-size: 9px; color: var(--text-muted); margin-top: 4px; }
+
+  /* RFM special */
+  .rfm-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .rfm-cell {
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .rfm-cell .rfm-name { font-size: 10px; font-weight: 600; }
+  .rfm-cell .rfm-count { font-family: 'DM Mono', monospace; font-size: 16px; margin-top: 4px; }
+  .rfm-cell .rfm-pct { font-size: 9px; color: var(--text-muted); }
+
+  .rfm-champions { background: rgba(62, 207, 142, 0.15); border: 1px solid rgba(62, 207, 142, 0.3); }
+  .rfm-loyal { background: rgba(46, 168, 224, 0.15); border: 1px solid rgba(46, 168, 224, 0.3); }
+  .rfm-risk { background: rgba(240, 160, 48, 0.15); border: 1px solid rgba(240, 160, 48, 0.3); }
+  .rfm-lost { background: rgba(224, 82, 82, 0.15); border: 1px solid rgba(224, 82, 82, 0.3); }
+
+  /* Tags */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-blue { background: rgba(46, 168, 224, 0.15); color: var(--accent); border: 1px solid rgba(46, 168, 224, 0.3); }
+  .tag-green { background: rgba(62, 207, 142, 0.15); color: var(--accent2); border: 1px solid rgba(62, 207, 142, 0.3); }
+  .tag-orange { background: rgba(240, 160, 48, 0.15); color: var(--accent3); border: 1px solid rgba(240, 160, 48, 0.3); }
+
+  /* Filter bar */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .filter-chip {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+  }
+
+  .filter-chip.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(46, 168, 224, 0.1);
+  }
+
+  .filter-label { font-size: 10px; color: var(--text-dim); }
+
+  /* Pareto line overlay */
+  .pareto-container { position: relative; }
+
+  /* Map placeholder */
+  .map-placeholder {
+    background: var(--wire);
+    border-radius: 6px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .map-dots {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .map-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+    position: relative;
+  }
+
+  .map-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    opacity: 0.3;
+  }
+
+  .section-title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-title span { color: var(--accent); }
+
+  .breadcrumb {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Gauge/meter */
+  .gauge-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .gauge-label { font-size: 9px; color: var(--text-muted); width: 60px; font-family: 'DM Mono', monospace; }
+  .gauge-track { flex: 1; height: 6px; background: var(--wire); border-radius: 3px; overflow: hidden; }
+  .gauge-fill { height: 100%; border-radius: 3px; background: var(--accent2); }
+  .gauge-val { font-size: 9px; font-family: 'DM Mono', monospace; color: var(--text-muted); width: 40px; text-align: right; }
+
+  .disclaimer {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    text-align: center;
+    padding: 16px;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Global Electro — Dashboard KPI
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <span class="badge">MAQUETTE v1.0</span>
+    <span class="badge">C722 — ESIG</span>
+    <span class="badge">2016–2021</span>
+  </div>
+</div>
+
+<div class="tabs-nav">
+  <button class="tab-btn active" onclick="showTab('home')"><span class="tab-num">00</span> HOME</button>
+  <button class="tab-btn" onclick="showTab('ventes')"><span class="tab-num">A</span> VENTES</button>
+  <button class="tab-btn" onclick="showTab('produits')"><span class="tab-num">B</span> PRODUITS</button>
+  <button class="tab-btn" onclick="showTab('clients')"><span class="tab-num">C</span> CLIENTS</button>
+  <button class="tab-btn" onclick="showTab('geo')"><span class="tab-num">D</span> GÉO & STORES</button>
+  <button class="tab-btn" onclick="showTab('data')" style="color:var(--text-dim)"><span class="tab-num">—</span> DATA</button>
+</div>
+
+<!-- ===== HOME ===== -->
+<div class="tab-content active" id="tab-home">
+
+  <div class="home-hero">
+    <div>
+      <div class="home-title">Dashboard Performance</div>
+      <div class="home-sub">Global Electro — Distribution mondiale d'électronique</div>
+      <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="tag tag-blue">8 pays</span>
+        <span class="tag tag-green">62 884 transactions</span>
+        <span class="tag tag-orange">11 marques</span>
+        <span class="tag tag-blue">5 devises → USD</span>
+      </div>
+    </div>
+    <div class="home-year-filter">
+      <span style="font-size:10px;color:var(--text-dim);margin-right:4px;">ANNÉE</span>
+      <button class="year-btn">2016</button>
+      <button class="year-btn">2017</button>
+      <button class="year-btn">2018</button>
+      <button class="year-btn">2019</button>
+      <button class="year-btn">2020</button>
+      <button class="year-btn active">2021</button>
+      <button class="year-btn">TOUT</button>
+    </div>
+  </div>
+
+  <div class="wire-label">→ <span>4 KPIs GLOBAUX</span> — mis à jour selon le filtre année</div>
+  <div class="kpi-row kpi-row-4" style="margin-bottom:20px;">
+    <div class="kpi-card blue">
+      <div class="kpi-name">CA Total (USD)</div>
+      <div class="kpi-value home">$12.4M</div>
+      <div class="kpi-delta up">↑ +8.3% vs 2020</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-name">Marge Brute</div>
+      <div class="kpi-value home">$4.1M</div>
+      <div class="kpi-delta up">↑ Taux 33.1%</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-name">Clients Actifs</div>
+      <div class="kpi-value home">8 249</div>
+      <div class="kpi-delta up">↑ +12.1% récurrents</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-name">Commandes</div>
+      <div class="kpi-value home">11 432</div>
+      <div class="kpi-delta down">↓ Panier moy. $1 085</div>
+    </div>
+  </div>
+
+  <div class="wire-label">→ <span>NAVIGATION</span> — boutons cliquables vers chaque onglet</div>
+  <div class="nav-grid">
+    <div class="nav-card" onclick="showTab('ventes')">
+      <div class="nav-icon">📈</div>
+      <div class="nav-name">Ventes</div>
+      <div class="nav-desc">CA · Marge · Évolution</div>
+    </div>
+    <div class="nav-card" onclick="showTab('produits')">
+      <div class="nav-icon">📦</div>
+      <div class="nav-name">Produits</div>
+      <div class="nav-desc">Top/Flop · Pareto · Marques</div>
+    </div>
+    <div class="nav-card" onclick="showTab('clients')">
+      <div class="nav-icon">👥</div>
+      <div class="nav-name">Clients</div>
+      <div class="nav-desc">RFM · CLV · Démo</div>
+    </div>
+    <div class="nav-card" onclick="showTab('geo')">
+      <div class="nav-icon">🌍</div>
+      <div class="nav-name">Géo & Stores</div>
+      <div class="nav-desc">Pays · Online · CA/m²</div>
+    </div>
+    <div class="nav-card" style="opacity:0.4;cursor:default;">
+      <div class="nav-icon">🗄️</div>
+      <div class="nav-name">Data</div>
+      <div class="nav-desc">Technique uniquement</div>
+    </div>
+  </div>
+  <div class="disclaimer">MAQUETTE — Les valeurs affichées sont illustratives · Les graphiques seront construits avec TCD + PowerPivot dans Excel</div>
+</div>
+
+<!-- ===== VENTES ===== -->
+<div class="tab-content" id="tab-ventes">
+  <div class="section-title-bar">
+    <div class="section-title">Onglet <span>A</span> — Ventes & Performance Financière</div>
+    <div class="breadcrumb">HOME / VENTES</div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">FILTRES :</span>
+    <span class="filter-chip active">Toutes années</span>
+    <span class="filter-chip">2016</span>
+    <span class="filter-chip">2017</span>
+    <span class="filter-chip">2018</span>
+    <span class="filter-chip">2019</span>
+    <span class="filter-chip">2020</span>
+    <span class="filter-chip">2021</span>
+    <span class="filter-chip">Tous trimestres</span>
+    <span class="filter-chip">Toutes régions</span>
+  </div>
+
+  <div class="kpi-row kpi-row-4">
+    <div class="kpi-card blue"><div class="kpi-name">CA Total</div><div class="kpi-value">$67.8M</div><div class="kpi-delta up">↑ +6.2% YoY</div></div>
+    <div class="kpi-card red"><div class="kpi-name">Coûts Totaux</div><div class="kpi-value">$44.9M</div><div class="kpi-delta down">↓ −2.1% YoY</div></div>
+    <div class="kpi-card green"><div class="kpi-name">Marge Brute</div><div class="kpi-value">$22.9M</div><div class="kpi-delta up">↑ Taux 33.8%</div></div>
+    <div class="kpi-card orange"><div class="kpi-name">Nb Commandes</div><div class="kpi-value">62 884</div><div class="kpi-delta up">↑ Panier $1 079</div></div>
+  </div>
+
+  <div class="chart-row chart-row-6040">
+    <div class="chart-box">
+      <div class="chart-title">CA & Marge par mois</div>
+      <div class="chart-sub">GRAPHIQUE COMBINÉ — Barres (CA) + Ligne (Marge) · Chronologie interactive</div>
+      <div class="fake-bars">
+        <div class="fake-bar blue" style="height:55%"></div>
+        <div class="fake-bar blue" style="height:62%"></div>
+        <div class="fake-bar blue" style="height:48%"></div>
+        <div class="fake-bar blue" style="height:70%"></div>
+        <div class="fake-bar blue" style="height:58%"></div>
+        <div class="fake-bar blue" style="height:65%"></div>
+        <div class="fake-bar blue" style="height:80%"></div>
+        <div class="fake-bar blue" style="height:72%"></div>
+        <div class="fake-bar blue" style="height:60%"></div>
+        <div class="fake-bar blue" style="height:75%"></div>
+        <div class="fake-bar blue" style="height:90%"></div>
+        <div class="fake-bar blue" style="height:95%"></div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:12px;">
+        <span class="tag tag-blue">■ CA (USD)</span>
+        <span class="tag tag-green">— Marge</span>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Évolution CA annuelle</div>
+      <div class="chart-sub">BARRES COLORÉES — Vert si croissance, rouge si déclin</div>
+      <div class="fake-bars" style="height:100px;">
+        <div class="fake-bar green" style="height:55%"></div>
+        <div class="fake-bar green" style="height:72%"></div>
+        <div class="fake-bar green" style="height:80%"></div>
+        <div class="fake-bar" style="height:65%;background:var(--accent4);opacity:0.7;"></div>
+        <div class="fake-bar green" style="height:88%"></div>
+        <div class="fake-bar green" style="height:100%"></div>
+      </div>
+      <div style="margin-top:6px;display:flex;justify-content:space-between;font-size:8px;font-family:'DM Mono',monospace;color:var(--text-dim);padding:0 4px;">
+        <span>2016</span><span>2017</span><span>2018</span><span>2019</span><span>2020</span><span>2021</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-row chart-row-3">
+    <div class="chart-box">
+      <div class="chart-title">CA par trimestre (comparaison années)</div>
+      <div class="chart-sub">BARRES GROUPÉES — Q1/Q2/Q3/Q4 sur 6 ans</div>
+      <div class="fake-bars" style="height:80px;gap:12px;">
+        <div style="display:flex;gap:3px;align-items:flex-end;flex:1;">
+          <div class="fake-bar blue" style="height:60%;flex:1;"></div>
+          <div class="fake-bar" style="height:75%;flex:1;background:var(--accent2);opacity:0.7;"></div>
+        </div>
+        <div style="display:flex;gap:3px;align-items:flex-end;flex:1;">
+          <div class="fake-bar blue" style="height:45%;flex:1;"></div>
+          <div class="fake-bar" style="height:62%;flex:1;background:var(--accent2);opacity:0.7;"></div>
+        </div>
+        <div style="display:flex;gap:3px;align-items:flex-end;flex:1;">
+          <div class="fake-bar blue" style="height:70%;flex:1;"></div>
+          <div class="fake-bar" style="height:85%;flex:1;background:var(--accent2);opacity:0.7;"></div>
+        </div>
+        <div style="display:flex;gap:3px;align-items:flex-end;flex:1;">
+          <div class="fake-bar blue" style="height:90%;flex:1;"></div>
+          <div class="fake-bar" style="height:100%;flex:1;background:var(--accent2);opacity:0.7;"></div>
+        </div>
+      </div>
+      <div style="margin-top:6px;display:flex;justify-content:space-around;font-size:8px;font-family:'DM Mono',monospace;color:var(--text-dim);">
+        <span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Impact taux de change</div>
+      <div class="chart-sub">⭐ KPI AVANCÉ — Marge en devise locale vs USD consolidé</div>
+      <div class="fake-hbars" style="margin-top:8px;">
+        <div class="fake-hbar-row"><span class="fake-hbar-label">USD</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:100%"></div></div><span>$22.9M</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">EUR</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:72%"></div></div><span>$6.8M</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">GBP</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:58%"></div></div><span>$4.2M</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">AUD</span><div class="fake-hbar-track"><div class="fake-hbar-fill orange-fill" style="width:45%"></div></div><span>$3.1M</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">CAD</span><div class="fake-hbar-track"><div class="fake-hbar-fill orange-fill" style="width:38%"></div></div><span>$2.4M</span></div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Tableau mensuel synthèse</div>
+      <div class="chart-sub">TABLEAU — CA / Coûts / Marge / Taux marge</div>
+      <table class="fake-table">
+        <tr><th>Mois</th><th>CA</th><th>Coût</th><th>Marge%</th></tr>
+        <tr><td>Jan</td><td class="highlight">$1.2M</td><td>$0.8M</td><td class="highlight" style="color:var(--accent2)">33%</td></tr>
+        <tr><td>Fév</td><td class="highlight">$0.9M</td><td>$0.6M</td><td class="highlight" style="color:var(--accent2)">34%</td></tr>
+        <tr><td>Mar</td><td class="highlight">$1.4M</td><td>$0.9M</td><td class="highlight" style="color:var(--accent3)">36%</td></tr>
+        <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="disclaimer">MAQUETTE — Les valeurs affichées sont illustratives · Les graphiques seront construits avec TCD + PowerPivot dans Excel</div>
+</div>
+
+<!-- ===== PRODUITS ===== -->
+<div class="tab-content" id="tab-produits">
+  <div class="section-title-bar">
+    <div class="section-title">Onglet <span>B</span> — Performance Produits</div>
+    <div class="breadcrumb">HOME / PRODUITS</div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">FILTRES :</span>
+    <span class="filter-chip active">Toutes catégories</span>
+    <span class="filter-chip">Audio</span>
+    <span class="filter-chip">Computers</span>
+    <span class="filter-chip">TV & Video</span>
+    <span class="filter-chip">Cell phones</span>
+    <span class="filter-chip">Toutes marques</span>
+    <span class="filter-chip active">Toutes années</span>
+  </div>
+
+  <div class="kpi-row kpi-row-4">
+    <div class="kpi-card blue"><div class="kpi-name">Produits Actifs</div><div class="kpi-value">2 517</div><div class="kpi-delta">8 catégories</div></div>
+    <div class="kpi-card orange"><div class="kpi-name">Nb Commandes</div><div class="kpi-value">62 884</div><div class="kpi-delta up">↑ lignes de vente</div></div>
+    <div class="kpi-card green"><div class="kpi-name">Panier Moyen</div><div class="kpi-value">$1 079</div><div class="kpi-delta up">↑ +3.4%</div></div>
+    <div class="kpi-card blue"><div class="kpi-name">Meilleure Catégorie</div><div class="kpi-value" style="font-size:14px;">Computers</div><div class="kpi-delta up">42% du CA</div></div>
+  </div>
+
+  <div class="chart-row chart-row-2">
+    <div class="chart-box">
+      <div class="chart-title">Top 5 Produits — CA</div>
+      <div class="chart-sub">BARRES HORIZONTALES — classement par chiffre d'affaires</div>
+      <div class="fake-hbars" style="margin-top:12px;">
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Contoso SL 15</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:100%"></div></div><span>$2.1M</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">WWI Desktop</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:82%"></div></div><span>$1.7M</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Fabrikam TV 55</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:68%"></div></div><span>$1.4M</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">A.Datum Phone</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:55%"></div></div><span>$1.1M</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Proseware Cam</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:44%"></div></div><span>$0.9M</span></div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Top 5 Produits — Marge ⭐</div>
+      <div class="chart-sub">BARRES HORIZONTALES — classement par rentabilité (≠ CA)</div>
+      <div class="fake-hbars" style="margin-top:12px;">
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Litware Cam Pro</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:100%"></div></div><span>48%</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Fabrikam TV 55</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:88%"></div></div><span>44%</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Contoso SL 15</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:72%"></div></div><span>38%</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Adventure W.</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:58%"></div></div><span>35%</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Proseware Cam</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:46%"></div></div><span>31%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-row chart-row-3">
+    <div class="chart-box" style="grid-column: span 2;">
+      <div class="chart-title">Courbe de Pareto — Produits ⭐</div>
+      <div class="chart-sub">% produits cumulés vs % CA cumulé — La règle 80/20 visualisée</div>
+      <div style="display:flex;align-items:flex-end;gap:4px;height:90px;margin-top:8px;">
+        <div class="fake-bar orange" style="height:40%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:55%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:65%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:72%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:78%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:82%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:85%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:88%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:91%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:94%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:97%;width:30px;flex:none;"></div>
+        <div class="fake-bar orange" style="height:100%;width:30px;flex:none;"></div>
+      </div>
+      <div style="margin-top:4px;font-size:9px;color:var(--accent3);font-family:'DM Mono',monospace;">→ Ligne 80% — identifier les produits stratégiques</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">CA par Marque</div>
+      <div class="chart-sub">11 MARQUES — parts de marché internes</div>
+      <div class="fake-hbars" style="margin-top:8px;">
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Contoso</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:100%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Fabrikam</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:75%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">A. Datum</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:58%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Litware</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:42%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Autres (7)</span><div class="fake-hbar-track"><div class="fake-hbar-fill orange-fill" style="width:30%"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="disclaimer">MAQUETTE — Les valeurs affichées sont illustratives · Les graphiques seront construits avec TCD + PowerPivot dans Excel</div>
+</div>
+
+<!-- ===== CLIENTS ===== -->
+<div class="tab-content" id="tab-clients">
+  <div class="section-title-bar">
+    <div class="section-title">Onglet <span>C</span> — Analyse Clients</div>
+    <div class="breadcrumb">HOME / CLIENTS</div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">FILTRES :</span>
+    <span class="filter-chip active">Tous segments</span>
+    <span class="filter-chip">Champions</span>
+    <span class="filter-chip">Fidèles</span>
+    <span class="filter-chip">À risque</span>
+    <span class="filter-chip">Tous pays</span>
+    <span class="filter-chip active">Toutes années</span>
+  </div>
+
+  <div class="kpi-row kpi-row-4">
+    <div class="kpi-card blue"><div class="kpi-name">Clients Actifs</div><div class="kpi-value">15 266</div><div class="kpi-delta up">↑ base totale</div></div>
+    <div class="kpi-card green"><div class="kpi-name">CA Moyen / Client</div><div class="kpi-value">$4 440</div><div class="kpi-delta up">↑ sur 6 ans</div></div>
+    <div class="kpi-card orange"><div class="kpi-name">Taux Récurrence</div><div class="kpi-value">XX%</div><div class="kpi-delta">à calculer</div></div>
+    <div class="kpi-card blue"><div class="kpi-name">CLV Estimée ⭐</div><div class="kpi-value">$X XXX</div><div class="kpi-delta">valeur vie client</div></div>
+  </div>
+
+  <div class="chart-row chart-row-2">
+    <div class="chart-box">
+      <div class="chart-title">Top 10 Clients par CA</div>
+      <div class="chart-sub">BARRES HORIZONTALES — concentration du CA</div>
+      <div class="fake-hbars" style="margin-top:8px;">
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Client A</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:100%"></div></div><span>$48K</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Client B</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:82%"></div></div><span>$39K</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Client C</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:68%"></div></div><span>$32K</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Client D</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:55%"></div></div><span>$26K</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Client E</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:44%"></div></div><span>$21K</span></div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Nouveaux vs Récurrents</div>
+      <div class="chart-sub">BARRES EMPILÉES — évolution de la fidélisation par année</div>
+      <div class="fake-bars" style="height:90px;gap:8px;">
+        <div style="display:flex;flex-direction:column;flex:1;border-radius:3px 3px 0 0;overflow:hidden;">
+          <div style="flex:0.3;background:var(--accent2);opacity:0.8;"></div>
+          <div style="flex:0.7;background:var(--accent);opacity:0.8;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;flex:1;border-radius:3px 3px 0 0;overflow:hidden;">
+          <div style="flex:0.35;background:var(--accent2);opacity:0.8;"></div>
+          <div style="flex:0.65;background:var(--accent);opacity:0.8;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;flex:1;border-radius:3px 3px 0 0;overflow:hidden;">
+          <div style="flex:0.4;background:var(--accent2);opacity:0.8;"></div>
+          <div style="flex:0.6;background:var(--accent);opacity:0.8;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;flex:1;border-radius:3px 3px 0 0;overflow:hidden;">
+          <div style="flex:0.45;background:var(--accent2);opacity:0.8;"></div>
+          <div style="flex:0.55;background:var(--accent);opacity:0.8;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;flex:1;border-radius:3px 3px 0 0;overflow:hidden;">
+          <div style="flex:0.38;background:var(--accent2);opacity:0.8;"></div>
+          <div style="flex:0.62;background:var(--accent);opacity:0.8;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;flex:1;border-radius:3px 3px 0 0;overflow:hidden;">
+          <div style="flex:0.5;background:var(--accent2);opacity:0.8;"></div>
+          <div style="flex:0.5;background:var(--accent);opacity:0.8;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px;">
+        <span class="tag tag-blue">■ Récurrents</span>
+        <span class="tag tag-green">■ Nouveaux</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wire-label">→ <span>SEGMENTATION RFM ⭐⭐⭐</span> — Récence · Fréquence · Montant</div>
+  <div class="chart-box" style="margin-bottom:12px;">
+    <div class="chart-title">Matrice RFM — Segmentation clients</div>
+    <div class="chart-sub">TABLEAU DE SEGMENTS — calculé depuis Order Date + CustomerKey + CA total par client</div>
+    <div class="rfm-grid" style="margin-top:12px;">
+      <div class="rfm-cell rfm-champions">
+        <div class="rfm-name" style="color:var(--accent2);">🏆 Champions</div>
+        <div class="rfm-count" style="color:var(--accent2);">X XXX</div>
+        <div class="rfm-pct">Achat récent, fréquent, élevé</div>
+      </div>
+      <div class="rfm-cell rfm-loyal">
+        <div class="rfm-name" style="color:var(--accent);">⭐ Fidèles</div>
+        <div class="rfm-count" style="color:var(--accent);">X XXX</div>
+        <div class="rfm-pct">Reviennent régulièrement</div>
+      </div>
+      <div class="rfm-cell rfm-risk">
+        <div class="rfm-name" style="color:var(--accent3);">⚠️ À risque</div>
+        <div class="rfm-count" style="color:var(--accent3);">X XXX</div>
+        <div class="rfm-pct">N'ont pas racheté récemment</div>
+      </div>
+      <div class="rfm-cell rfm-lost">
+        <div class="rfm-name" style="color:var(--accent4);">💤 Perdus</div>
+        <div class="rfm-count" style="color:var(--accent4);">X XXX</div>
+        <div class="rfm-pct">Inactifs longue durée</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wire-label">→ <span>DÉMOGRAPHIE ⭐⭐</span> — Genre + Tranche d'âge (depuis Birthday)</div>
+  <div class="chart-row chart-row-2">
+    <div class="chart-box">
+      <div class="chart-title">CA par Genre</div>
+      <div class="chart-sub">DONUT ou BARRES — Homme vs Femme</div>
+      <div class="fake-bars" style="height:80px;gap:24px;justify-content:center;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="fake-bar blue" style="height:75px;width:60px;border-radius:4px;"></div>
+          <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--text-muted);">Homme</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="fake-bar" style="height:55px;width:60px;border-radius:4px;background:var(--accent3);opacity:0.7;"></div>
+          <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--text-muted);">Femme</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">CA par Tranche d'âge ⭐</div>
+      <div class="chart-sub">BARRES — calculé depuis Birthday → âge au moment de l'achat</div>
+      <div class="fake-hbars" style="margin-top:12px;">
+        <div class="fake-hbar-row"><span class="fake-hbar-label">&lt; 30 ans</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:40%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">30–45 ans</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:100%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">45–60 ans</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:82%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">60+ ans</span><div class="fake-hbar-track"><div class="fake-hbar-fill orange-fill" style="width:35%"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="disclaimer">MAQUETTE — Les valeurs affichées sont illustratives · Les graphiques seront construits avec TCD + PowerPivot dans Excel</div>
+</div>
+
+<!-- ===== GEO ===== -->
+<div class="tab-content" id="tab-geo">
+  <div class="section-title-bar">
+    <div class="section-title">Onglet <span>D</span> — Géographie & Stores</div>
+    <div class="breadcrumb">HOME / GÉO & STORES</div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">FILTRES :</span>
+    <span class="filter-chip active">Tous pays</span>
+    <span class="filter-chip">Australia</span>
+    <span class="filter-chip">United States</span>
+    <span class="filter-chip">Europe</span>
+    <span class="filter-chip active">Online + Physique</span>
+    <span class="filter-chip active">Toutes années</span>
+  </div>
+
+  <div class="kpi-row kpi-row-4">
+    <div class="kpi-card blue"><div class="kpi-name">Pays Actifs</div><div class="kpi-value">8</div><div class="kpi-delta">3 continents</div></div>
+    <div class="kpi-card green"><div class="kpi-name">Nb Stores</div><div class="kpi-value">67</div><div class="kpi-delta">+ 1 canal Online</div></div>
+    <div class="kpi-card orange"><div class="kpi-name">Part Online ⭐</div><div class="kpi-value">20.9%</div><div class="kpi-delta up">↑ 13 165 ventes</div></div>
+    <div class="kpi-card green"><div class="kpi-name">Meilleur Pays</div><div class="kpi-value" style="font-size:14px;">USA</div><div class="kpi-delta up">↑ CA estimé</div></div>
+  </div>
+
+  <div class="chart-row chart-row-2">
+    <div class="chart-box">
+      <div class="chart-title">CA & Marge par Pays</div>
+      <div class="chart-sub">BARRES GROUPÉES — CA + Marge côte à côte par pays</div>
+      <div class="fake-hbars" style="margin-top:12px;">
+        <div class="fake-hbar-row"><span class="fake-hbar-label">United States</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:100%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Australia</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:82%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">United Kingdom</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:64%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Germany</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:52%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">France</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:44%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Canada</span><div class="fake-hbar-track"><div class="fake-hbar-fill blue-fill" style="width:38%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Italy</span><div class="fake-hbar-track"><div class="fake-hbar-fill orange-fill" style="width:28%"></div></div></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Netherlands</span><div class="fake-hbar-track"><div class="fake-hbar-fill orange-fill" style="width:20%"></div></div></div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Online vs Physique ⭐⭐</div>
+      <div class="chart-sub">COMPARAISON — CA / Marge / Nb commandes / Panier moyen</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+        <div style="background:rgba(46,168,224,0.1);border:1px solid rgba(46,168,224,0.2);border-radius:6px;padding:12px;text-align:center;">
+          <div style="font-size:9px;color:var(--accent);font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:6px;">🏪 Physique</div>
+          <div style="font-family:'DM Mono',monospace;font-size:18px;">79.1%</div>
+          <div style="font-size:9px;color:var(--text-muted);margin-top:4px;">du CA total</div>
+          <div style="margin-top:8px;">
+            <div class="gauge-row"><span class="gauge-label">CA</span><div class="gauge-track"><div class="gauge-fill" style="width:79%;background:var(--accent)"></div></div></div>
+            <div class="gauge-row"><span class="gauge-label">Marge</span><div class="gauge-track"><div class="gauge-fill" style="width:72%;background:var(--accent)"></div></div></div>
+          </div>
+        </div>
+        <div style="background:rgba(62,207,142,0.1);border:1px solid rgba(62,207,142,0.2);border-radius:6px;padding:12px;text-align:center;">
+          <div style="font-size:9px;color:var(--accent2);font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:6px;">🌐 Online</div>
+          <div style="font-family:'DM Mono',monospace;font-size:18px;">20.9%</div>
+          <div style="font-size:9px;color:var(--text-muted);margin-top:4px;">du CA total</div>
+          <div style="margin-top:8px;">
+            <div class="gauge-row"><span class="gauge-label">CA</span><div class="gauge-track"><div class="gauge-fill" style="width:21%;"></div></div></div>
+            <div class="gauge-row"><span class="gauge-label">Marge%</span><div class="gauge-track"><div class="gauge-fill" style="width:38%;"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:9px;color:var(--accent2);font-family:'DM Mono',monospace;">→ Hypothèse : marge online > physique (pas de loyer)</div>
+    </div>
+  </div>
+
+  <div class="chart-row chart-row-2">
+    <div class="chart-box">
+      <div class="chart-title">CA par m² — Performance Stores ⭐⭐⭐</div>
+      <div class="chart-sub">KPI RETAIL — CA annuel / Surface (Square Meters) · 67 stores</div>
+      <div class="fake-hbars" style="margin-top:12px;">
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Store 12</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:100%"></div></div><span>$842/m²</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Store 7</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:85%"></div></div><span>$716/m²</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Store 24</span><div class="fake-hbar-track"><div class="fake-hbar-fill green-fill" style="width:71%"></div></div><span>$598/m²</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Store 3</span><div class="fake-hbar-track"><div class="fake-hbar-fill orange-fill" style="width:42%"></div></div><span>$354/m²</span></div>
+        <div class="fake-hbar-row"><span class="fake-hbar-label">Store 31</span><div class="fake-hbar-track"><div class="fake-hbar-fill" style="width:28%;background:var(--accent4);opacity:0.7;"></div></div><span>$236/m²</span></div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Performance par Continent</div>
+      <div class="chart-sub">VUE MACRO — Amérique du Nord / Europe / Australie</div>
+      <div class="fake-bars" style="height:100px;gap:24px;justify-content:center;margin-top:12px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="fake-bar blue" style="height:100px;width:70px;border-radius:4px;"></div>
+          <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--text-muted);">Amérique N.</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="fake-bar blue" style="height:75px;width:70px;border-radius:4px;"></div>
+          <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--text-muted);">Europe</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="fake-bar orange" style="height:55px;width:70px;border-radius:4px;"></div>
+          <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--text-muted);">Australie</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="disclaimer">MAQUETTE — Les valeurs affichées sont illustratives · Les graphiques seront construits avec TCD + PowerPivot dans Excel</div>
+</div>
+
+<!-- ===== DATA ===== -->
+<div class="tab-content" id="tab-data">
+  <div class="section-title-bar">
+    <div class="section-title">Onglet <span style="color:var(--text-dim);">—</span> Data</div>
+    <div class="breadcrumb">TECHNIQUE UNIQUEMENT — Non présenté</div>
+  </div>
+  <div class="wire-section">
+    <div class="wire-label">→ <span>TABLES POWERQUERY</span> — données brutes nettoyées</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px;">
+      <div style="background:var(--wire);border-radius:6px;padding:12px;text-align:center;">
+        <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;">Sales</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--accent);">62 884</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">lignes</div>
+      </div>
+      <div style="background:var(--wire);border-radius:6px;padding:12px;text-align:center;">
+        <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;">Customers</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--accent);">15 266</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">lignes</div>
+      </div>
+      <div style="background:var(--wire);border-radius:6px;padding:12px;text-align:center;">
+        <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;">Products</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--accent);">2 517</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">lignes</div>
+      </div>
+      <div style="background:var(--wire);border-radius:6px;padding:12px;text-align:center;">
+        <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;">Stores</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--accent);">68</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">lignes</div>
+      </div>
+      <div style="background:var(--wire);border-radius:6px;padding:12px;text-align:center;">
+        <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;">Exchange</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--accent);">11 215</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">lignes</div>
+      </div>
+    </div>
+  </div>
+  <div class="wire-section">
+    <div class="wire-label">→ <span>MODÈLE POWERPIVOT</span> — relations entre tables</div>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);line-height:2;padding:8px;">
+      Sales[CustomerKey] → Customers[CustomerKey]<br>
+      Sales[ProductKey] → Products[ProductKey]<br>
+      Sales[StoreKey] → Stores[StoreKey]<br>
+      Sales[Order Date] + Sales[Currency Code] → Exchange_Rates[Date][Currency]<br>
+      <span style="color:var(--accent2);">→ Mesure DAX : CA_USD = Quantity × UnitPrice × ExchangeRate</span><br>
+      <span style="color:var(--accent2);">→ Mesure DAX : Marge_USD = (UnitPrice − UnitCost) × Quantity × ExchangeRate</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  const map = { home: 0, ventes: 1, produits: 2, clients: 3, geo: 4, data: 5 };
+  btns[map[id]].classList.add('active');
+}
+</script>
+
+</body>
+</html>
