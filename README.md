@@ -1,2 +1,0 @@
-# global-electro-dashboard
-maquette_dashboard_global_electro
